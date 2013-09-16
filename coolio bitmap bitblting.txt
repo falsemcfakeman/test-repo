@@ -1,0 +1,32 @@
+//The following code demonstrates how to use the LoadBitmapFromBMPFile function:
+
+   case WM_PAINT:
+   {
+     PAINTSTRUCT   ps;
+     HBITMAP       hBitmap, hOldBitmap;
+     HPALETTE      hPalette, hOldPalette;
+     HDC           hDC, hMemDC;
+     BITMAP        bm;
+
+   hDC = BeginPaint( hWnd, &ps );
+
+   if( LoadBitmapFromBMPFile( szFileName, &hBitmap, &hPalette ) )
+   {
+      GetObject( hBitmap, sizeof(BITMAP), &bm );
+      hMemDC = CreateCompatibleDC( hDC );
+      hOldBitmap = (HBITMAP)SelectObject( hMemDC, hBitmap );
+      hOldPalette = SelectPalette( hDC, hPalette, FALSE );
+      RealizePalette( hDC );
+
+      BitBlt( hDC, 0, 0, bm.bmWidth, bm.bmHeight,
+              hMemDC, 0, 0, SRCCOPY );
+
+      SelectObject( hMemDC, hOldBitmap );
+      DeleteObject( hBitmap );
+      SelectPalette( hDC, hOldPalette, FALSE );
+      DeleteObject( hPalette );
+   }
+   EndPaint( hWnd, &amp;ps );
+
+   }
+   break;
